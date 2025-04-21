@@ -1,8 +1,16 @@
 #!/bin/bash
 set -e
 
-# Pull the Docker image from Docker Hub
-docker pull abhishekf5/simple-python-flask-app
+IMAGE_NAME="abhishekf5/simple-python-flask-app"
+IMAGE_TAG="latest"
+IMAGE_URI="${IMAGE_NAME}:${IMAGE_TAG}"
 
-# Run the Docker image as a container
-docker run -d -p 5000:5000 abhishekf5/simple-python-flask-app
+echo "Pulling Docker image: $IMAGE_URI"
+docker pull "$IMAGE_URI"
+
+echo "Stopping old container if exists..."
+docker stop flask-app || true
+docker rm flask-app || true
+
+echo "Running new container..."
+docker run -d --name flask-app -p 5000:5000 "$IMAGE_URI"
